@@ -1,4 +1,4 @@
-package shopify
+package goshopify
 
 import (
 	"encoding/json"
