@@ -6,7 +6,7 @@ import (
 	"net/url"
 )
 
-type OrdersCountResponse struct {
+type OrdersCount struct {
 	Count int64 `json:"count"`
 }
 
@@ -178,19 +178,19 @@ type RefundLineItem struct {
 	LineItem   *LineItem `json:"line_item"`
 }
 
-func (s *Shopify) GetOrdersCount(creds *Credentials, params url.Values) (int64, error) {
+func (s *Shopify) GetOrdersCount(creds *Credentials, params url.Values) (*OrdersCount, error) {
 	uri, err := s.getUri(OrdersCountEndpoint, creds, params)
 	if err != nil {
-		return 0, err
+		return nil, err
 	}
 
-	var orderCount OrdersCountResponse
-	err = s.DoResponse("GET", uri, creds, nil, &orderCount)
+	var count *OrdersCount
+	err = s.DoResponse("GET", uri, creds, nil, &count)
 	if err != nil {
-		return 0, errors.New(fmt.Sprintf("OrdersCount: %s", err.Error()))
+		return nil, errors.New(fmt.Sprintf("OrdersCount: %s", err.Error()))
 	}
 
-	return orderCount.Count, nil
+	return count, nil
 }
 
 func (s *Shopify) GetOrders(creds *Credentials, params url.Values) ([]*Order, error) {

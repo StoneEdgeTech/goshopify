@@ -5,7 +5,7 @@ import (
 	"net/url"
 )
 
-type ProductsCountResponse struct {
+type ProductsCount struct {
 	Count int64 `json:"count"`
 }
 
@@ -83,17 +83,17 @@ func (s *Shopify) GetProducts(creds *Credentials, params url.Values) ([]*Product
 	return productsResponse.Products, nil
 }
 
-func (s *Shopify) GetProductsCount(creds *Credentials, params url.Values) (int64, error) {
+func (s *Shopify) GetProductsCount(creds *Credentials, params url.Values) (*ProductsCount, error) {
 	uri, err := s.getUri(ProductsCountEndpoint, creds, params)
 	if err != nil {
-		return 0, err
+		return nil, err
 	}
 
-	var productCount ProductsCountResponse
+	var productCount *ProductsCount
 	err = s.DoResponse("GET", uri, creds, nil, &productCount)
 	if err != nil {
-		return 0, fmt.Errorf("ProductsCount: %s", err.Error())
+		return nil, fmt.Errorf("ProductsCount: %s", err.Error())
 	}
 
-	return productCount.Count, nil
+	return productCount, nil
 }

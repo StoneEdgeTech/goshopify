@@ -316,7 +316,7 @@ func TestShopifyOrders(t *testing.T) {
 
 				count, err := s.GetOrdersCount(c, nil)
 				Expect(err).NotTo(HaveOccurred())
-				Expect(count).To(Equal(int64(33)))
+				Expect(count.Count).To(Equal(int64(33)))
 			})
 		})
 	})
