@@ -1,6 +1,6 @@
 goshopify
 =========
-Idiomatic Shopify API in Go
+Idiomatic implementation of the [Shopify API](https://docs.shopify.com/api) in Go
 
 Progress
 ====
@@ -42,7 +42,3 @@ SmartCollection               | :no_entry:  |
 Theme                         | :no_entry:  |
 Transaction                   | :warning:   |
 Webhook                       | :no_entry:  |
-
-References
-==========
-* https://docs.shopify.com/api
