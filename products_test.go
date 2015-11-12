@@ -459,7 +459,7 @@ func TestShopifyProducts(t *testing.T) {
 
 				count, err := s.GetProductsCount(c, nil)
 				Expect(err).NotTo(HaveOccurred())
-				Expect(count).To(Equal(int64(20)))
+				Expect(count.Count).To(Equal(int64(20)))
 			})
 
 			g.It("should get a products count that belong to a certain collection", func() {
@@ -474,7 +474,7 @@ func TestShopifyProducts(t *testing.T) {
 
 				count, err := s.GetProductsCount(c, params)
 				Expect(err).NotTo(HaveOccurred())
-				Expect(count).To(Equal(int64(1)))
+				Expect(count.Count).To(Equal(int64(1)))
 			})
 		})
 	})
