@@ -25,13 +25,13 @@ FulfillmentEvent                   | :no_entry:  |
 FulfillmentService                 | :no_entry:  |
 Location                           | :no_entry:  |
 Metafield                          | :no_entry:  |
-Order                              | :warning:   |
+[Order](docs/order.md)             | :warning:   |
 Order Risks                        | :no_entry:  |
 Page                               | :no_entry:  |
 Policy                             | :no_entry:  |
-Product                            | :warning:   |
+[Product](docs/product.md)         | :warning:   |
 Product Image                      | :no_entry:  |
-Product Variant                    | :warning:   |
+[Product Variant](docs/variant.md) | :warning:   |
 Province                           | :no_entry:  |
 RecurringApplicationCharge         | :no_entry:  |
 Redirect                           | :no_entry:  |
