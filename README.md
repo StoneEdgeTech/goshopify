@@ -16,7 +16,7 @@ Collect                       | :no_entry:  |
 Comment                       | :no_entry:  |
 Country                       | :no_entry:  |
 CustomCollection              | :no_entry:  |
-[Customer](docs/customers.md) | :warning:   |
+[Customer](docs/customer.md)  | :warning:   |
 CustomerAddress               | :no_entry:  |
 CustomerSavedSearch           | :no_entry:  |
 Event                         | :no_entry:  |
