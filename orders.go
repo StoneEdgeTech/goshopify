@@ -185,7 +185,7 @@ func (s *Shopify) GetOrdersCount(creds *Credentials, params url.Values) (*Orders
 	}
 
 	var count *OrdersCount
-	err = s.DoResponse("GET", uri, creds, nil, &count)
+	err = s.DoRequest("GET", uri, creds, nil, &count)
 	if err != nil {
 		return nil, errors.New(fmt.Sprintf("OrdersCount: %s", err.Error()))
 	}
@@ -200,7 +200,7 @@ func (s *Shopify) GetOrders(creds *Credentials, params url.Values) ([]*Order, er
 	}
 
 	var ordersResponse *OrdersResponse
-	err = s.DoResponse("GET", uri, creds, nil, &ordersResponse)
+	err = s.DoRequest("GET", uri, creds, nil, &ordersResponse)
 	if err != nil {
 		return nil, fmt.Errorf("Request to Shopify Orders failed: %s", err.Error())
 	}
@@ -214,7 +214,7 @@ func (s *Shopify) GetOrder(orderId string, creds *Credentials, params url.Values
 		return nil, err
 	}
 	var orderResponse *OrderResponse
-	err = s.DoResponse("GET", uri, creds, nil, &orderResponse)
+	err = s.DoRequest("GET", uri, creds, nil, &orderResponse)
 	if err != nil {
 		return nil, fmt.Errorf("Request to Shopify Get Order failed: %s", err.Error())
 	}

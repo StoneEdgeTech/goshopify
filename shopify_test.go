@@ -102,7 +102,7 @@ func TestShopify(t *testing.T) {
 			type TestJson struct {
 			}
 			var r TestJson
-			err := s.DoResponse("GET", u, c, nil, &r)
+			err := s.DoRequest("GET", u, c, nil, &r)
 
 			Expect(err).To(HaveOccurred())
 		})
@@ -119,7 +119,7 @@ func TestShopify(t *testing.T) {
 			type TestJson struct {
 			}
 			var r TestJson
-			err := s.DoResponse("GET", u, c, nil, &r)
+			err := s.DoRequest("GET", u, c, nil, &r)
 
 			Expect(err).To(HaveOccurred())
 		})
@@ -136,7 +136,7 @@ func TestShopify(t *testing.T) {
 			type TestJson struct {
 			}
 			var r TestJson
-			err := s.DoResponse("GET", u, c, nil, &r)
+			err := s.DoRequest("GET", u, c, nil, &r)
 
 			Expect(err).To(HaveOccurred())
 		})

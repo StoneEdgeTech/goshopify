@@ -42,7 +42,7 @@ func (s *Shopify) GetCustomers(creds *Credentials, params url.Values) ([]*Custom
 	}
 
 	var customersResponse *CustomersResponse
-	err = s.DoResponse("GET", uri, creds, nil, &customersResponse)
+	err = s.DoRequest("GET", uri, creds, nil, &customersResponse)
 	if err != nil {
 		return nil, fmt.Errorf("Customers: %s", err.Error())
 	}
@@ -57,7 +57,7 @@ func (s *Shopify) GetCustomersCount(creds *Credentials, params url.Values) (*Cus
 	}
 
 	var customersCount CustomersCount
-	err = s.DoResponse("GET", uri, creds, nil, &customersCount)
+	err = s.DoRequest("GET", uri, creds, nil, &customersCount)
 	if err != nil {
 		return nil, fmt.Errorf("CustomersCount: %s", err.Error())
 	}
