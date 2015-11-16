@@ -60,7 +60,7 @@ func (s *Shopify) GetProduct(productId string, creds *Credentials, params url.Va
 	}
 
 	var productResponse *ProductResponse
-	err = s.DoResponse("GET", uri, creds, nil, &productResponse)
+	err = s.DoRequest("GET", uri, creds, nil, &productResponse)
 	if err != nil {
 		return nil, fmt.Errorf("Product: %s", err.Error())
 	}
@@ -75,7 +75,7 @@ func (s *Shopify) GetProducts(creds *Credentials, params url.Values) ([]*Product
 	}
 
 	var productsResponse *ProductsResponse
-	err = s.DoResponse("GET", uri, creds, nil, &productsResponse)
+	err = s.DoRequest("GET", uri, creds, nil, &productsResponse)
 	if err != nil {
 		return nil, fmt.Errorf("Products: %s", err.Error())
 	}
@@ -90,7 +90,7 @@ func (s *Shopify) GetProductsCount(creds *Credentials, params url.Values) (*Prod
 	}
 
 	var productCount *ProductsCount
-	err = s.DoResponse("GET", uri, creds, nil, &productCount)
+	err = s.DoRequest("GET", uri, creds, nil, &productCount)
 	if err != nil {
 		return nil, fmt.Errorf("ProductsCount: %s", err.Error())
 	}

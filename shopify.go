@@ -72,7 +72,7 @@ func (s *Shopify) getUri(endpoint string, creds *Credentials, params url.Values)
 	return uri, nil
 }
 
-func (s *Shopify) DoResponse(verb string, uri *url.URL, creds *Credentials, payload []byte, jsonStruct interface{}) error {
+func (s *Shopify) DoRequest(verb string, uri *url.URL, creds *Credentials, payload []byte, jsonStruct interface{}) error {
 	// Make sure the verb is uppercased
 	verb = strings.ToUpper(verb)
 
@@ -114,7 +114,7 @@ func (s *Shopify) DoResponse(verb string, uri *url.URL, creds *Credentials, payl
 			time.Sleep(time.Duration(sleepInterval) * time.Second)
 
 			// retry
-			return s.DoResponse(verb, uri, creds, payload, jsonStruct)
+			return s.DoRequest(verb, uri, creds, payload, jsonStruct)
 		}
 
 		// return the error

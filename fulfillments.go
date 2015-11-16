@@ -34,7 +34,7 @@ func (s *Shopify) CreateFulfillment(fulfillmentJson, orderId string, creds *Cred
 	}
 
 	var fulfillmentsResponse *FulfillmentsResponse
-	err = s.DoResponse("POST", uri, creds, []byte(fulfillmentJson), &fulfillmentsResponse)
+	err = s.DoRequest("POST", uri, creds, []byte(fulfillmentJson), &fulfillmentsResponse)
 	if err != nil {
 		return nil, fmt.Errorf("Request to Shopify Create Fulfillment failed: %s", err.Error())
 	}
@@ -53,7 +53,7 @@ func (s *Shopify) CompleteFulfillment(orderId, shipmentId string, creds *Credent
 	}
 
 	var fulfillmentResponse *Fulfillment
-	err = s.DoResponse("POST", uri, creds, []byte(""), &fulfillmentResponse)
+	err = s.DoRequest("POST", uri, creds, []byte(""), &fulfillmentResponse)
 	if err != nil {
 		return nil, fmt.Errorf("Request to Shopify Complete Fulfillment failed: %s", err.Error())
 	}
@@ -69,7 +69,7 @@ func (s *Shopify) GetFulfillments(orderId string, creds *Credentials, params url
 	}
 
 	var fulfillmentsResponse *FulfillmentsResponse
-	err = s.DoResponse("GET", uri, creds, nil, &fulfillmentsResponse)
+	err = s.DoRequest("GET", uri, creds, nil, &fulfillmentsResponse)
 	if err != nil {
 		return nil, fmt.Errorf("Request to Shopify Orders failed: %s", err.Error())
 	}

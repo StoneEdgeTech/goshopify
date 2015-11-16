@@ -50,7 +50,7 @@ func (s *Shopify) GetTransactions(orderId string, creds *Credentials, params url
 	}
 
 	var transactionsResponse *TransactionsResponse
-	err = s.DoResponse("GET", uri, creds, nil, &transactionsResponse)
+	err = s.DoRequest("GET", uri, creds, nil, &transactionsResponse)
 	if err != nil {
 		return nil, fmt.Errorf("Request to Shopify Transactions failed: %s", err.Error())
 	}

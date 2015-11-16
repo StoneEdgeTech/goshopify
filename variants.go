@@ -69,7 +69,7 @@ func (s *Shopify) GetVariant(variantId string, creds *Credentials, params url.Va
 	}
 
 	var variantResponse *VariantResponse
-	err = s.DoResponse("GET", uri, creds, nil, &variantResponse)
+	err = s.DoRequest("GET", uri, creds, nil, &variantResponse)
 	if err != nil {
 		return nil, fmt.Errorf("Variant: %s", err.Error())
 	}
@@ -95,7 +95,7 @@ func (s *Shopify) PutVariant(variantId string, payload interface{}, creds *Crede
 	}
 
 	var variantResponse *VariantResponse
-	err = s.DoResponse("PUT", uri, creds, jsonPayload, &variantResponse)
+	err = s.DoRequest("PUT", uri, creds, jsonPayload, &variantResponse)
 	if err != nil {
 		return nil, fmt.Errorf("Variant: %s", err.Error())
 	}
