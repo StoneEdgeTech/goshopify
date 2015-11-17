@@ -4,6 +4,10 @@ Idiomatic implementation of the [Shopify API](https://docs.shopify.com/api) in G
 
 Progress
 ====
+:no_entry: not implemented
+:warning: partialy implemented
+:white_check_mark: implemented
+
 Object                             | Implemented |
 -----------------------------------|-------------|
 ApplicationCharge                  | :no_entry:  |
