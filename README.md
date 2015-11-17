@@ -46,3 +46,10 @@ SmartCollection                    | :no_entry:  |
 Theme                              | :no_entry:  |
 Transaction                        | :warning:   |
 Webhook                            | :no_entry:  |
+
+ToDo
+====
+* Complete documentation examples for implemented objects
+* Add contributing document
+* Add more complete examples
+* Implement remaining objects
