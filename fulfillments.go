@@ -1,10 +1,13 @@
 package goshopify
 
 import (
-	"errors"
 	"fmt"
 	"net/url"
 )
+
+type SingleFulfillmentResponse struct {
+	Fulfillment Fulfillment `json:"fulfillment"`
+}
 
 type FulfillmentsResponse struct {
 	Fulfillments []*Fulfillment `json:"fulfillments"`
@@ -33,16 +36,12 @@ func (s *Shopify) CreateFulfillment(fulfillmentJson, orderId string, creds *Cred
 		return nil, err
 	}
 
-	var fulfillmentsResponse *FulfillmentsResponse
-	err = s.DoRequest("POST", uri, creds, []byte(fulfillmentJson), &fulfillmentsResponse)
+	var fulfillmentResponse SingleFulfillmentResponse
+	err = s.DoRequest("POST", uri, creds, []byte(fulfillmentJson), &fulfillmentResponse)
 	if err != nil {
 		return nil, fmt.Errorf("Request to Shopify Create Fulfillment failed: %s", err.Error())
 	}
-
-	if len(fulfillmentsResponse.Fulfillments) < 1 {
-		return nil, errors.New("CreateFulfillment returned with no fulfillment response.")
-	}
-	return fulfillmentsResponse.Fulfillments[0], nil
+	return &fulfillmentResponse.Fulfillment, nil
 }
 
 // call shopify to ship fulfillment (mark as complete)
