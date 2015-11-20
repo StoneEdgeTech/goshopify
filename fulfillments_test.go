@@ -32,7 +32,8 @@ func TestShopifyFullfillments(t *testing.T) {
 				var fulfillmentResponse SingleFulfillmentResponse
 				err := json.Unmarshal([]byte(SingleFulfillmentsJson), &fulfillmentResponse)
 				Expect(err).NotTo(HaveOccurred())
-				fmt.Printf("fulfillments:\n%+v\n", fulfillmentResponse)
+				Expect(fulfillmentResponse.Fulfillment.Id).To(Equal(int64(1533523203)))
+				Expect(fulfillmentResponse.Fulfillment.LineItems).To(HaveLen(4))
 			})
 		})
 
