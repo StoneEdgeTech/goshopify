@@ -1,6 +1,7 @@
 package goshopify
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"testing"
@@ -24,6 +25,32 @@ func TestShopifyFullfillments(t *testing.T) {
 
 		g.AfterEach(func() {
 			mockShopify.Close()
+		})
+
+		g.Describe("serialization", func() {
+			g.It("should unmarshal a single fulfillment response without error", func() {
+				var fulfillmentResponse SingleFulfillmentResponse
+				err := json.Unmarshal([]byte(SingleFulfillmentsJson), &fulfillmentResponse)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(fulfillmentResponse.Fulfillment.Id).To(Equal(int64(1533523203)))
+				Expect(fulfillmentResponse.Fulfillment.LineItems).To(HaveLen(4))
+			})
+		})
+
+		g.Describe("CreateFulfillment", func() {
+			g.It("should send back a single fulfillment after creating a fulfillment", func() {
+				fulfillmentJson := `{"fulfillment": {"tracking_number": "9405510200882805665013" }}`
+				orderId := `2017986627`
+				c := &Credentials{"some-cart-id", "oauthom"}
+				mockShopify.SetPayload([]byte(SingleFulfillmentsJson))
+				mockShopify.SetStatus(http.StatusCreated)
+				host, port := mockShopify.HostPort()
+				s := &Shopify{fmt.Sprintf("http://%s:%s", host, port)}
+				fulfillment, err := s.CreateFulfillment(fulfillmentJson, orderId, c, nil)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(fulfillment.Id).To(Equal(int64(1533523203)))
+				Expect(fulfillment.LineItems).To(HaveLen(4))
+			})
 		})
 
 		g.Describe("Get All", func() {
@@ -125,5 +152,123 @@ const (
       ]
     }
   ]
+}`
+	SingleFulfillmentsJson = `{
+    "fulfillment": {
+        "created_at": "2015-11-20T17:39:18-05:00",
+        "id": 1533523203,
+        "line_items": [
+            {
+                "fulfillable_quantity": 0,
+                "fulfillment_service": "manual",
+                "fulfillment_status": "fulfilled",
+                "gift_card": false,
+                "grams": 0,
+                "id": 3438143235,
+                "name": "A Thing",
+                "price": "3.00",
+                "product_exists": true,
+                "product_id": 2973534595,
+                "properties": [],
+                "quantity": 4,
+                "requires_shipping": true,
+                "sku": "123458",
+                "tax_lines": [],
+                "taxable": true,
+                "title": "A Thing",
+                "total_discount": "0.00",
+                "variant_id": 8683025987,
+                "variant_inventory_management": "shopify",
+                "variant_title": "",
+                "vendor": "service tier development store"
+            },
+            {
+                "fulfillable_quantity": 0,
+                "fulfillment_service": "manual",
+                "fulfillment_status": "fulfilled",
+                "gift_card": false,
+                "grams": 454,
+                "id": 3438143299,
+                "name": "Joseph's Amazing Technicolor Dreamcoat - medium / lilac",
+                "price": "20.00",
+                "product_exists": true,
+                "product_id": 1783591875,
+                "properties": [],
+                "quantity": 2,
+                "requires_shipping": true,
+                "sku": "346723476062",
+                "tax_lines": [],
+                "taxable": true,
+                "title": "Joseph's Amazing Technicolor Dreamcoat",
+                "total_discount": "0.00",
+                "variant_id": 5161007363,
+                "variant_inventory_management": "shopify",
+                "variant_title": "medium / lilac",
+                "vendor": "service tier development store"
+            },
+            {
+                "fulfillable_quantity": 0,
+                "fulfillment_service": "manual",
+                "fulfillment_status": "fulfilled",
+                "gift_card": false,
+                "grams": 241,
+                "id": 3438143363,
+                "name": "Incredibly Epic Hoodie - Blue / Large",
+                "price": "12.34",
+                "product_exists": true,
+                "product_id": 2191471363,
+                "properties": [],
+                "quantity": 2,
+                "requires_shipping": false,
+                "sku": "hoodie006",
+                "tax_lines": [],
+                "taxable": false,
+                "title": "Incredibly Epic Hoodie",
+                "total_discount": "0.00",
+                "variant_id": 6284702403,
+                "variant_inventory_management": "shopify",
+                "variant_title": "Blue / Large",
+                "vendor": "service tier development store"
+            },
+            {
+                "fulfillable_quantity": 0,
+                "fulfillment_service": "manual",
+                "fulfillment_status": "fulfilled",
+                "gift_card": false,
+                "grams": 3629,
+                "id": 3438143427,
+                "name": "Example T-Shirt - Lithograph - Height: 9\" x Width: 12\"",
+                "price": "25.00",
+                "product_exists": true,
+                "product_id": 1783688963,
+                "properties": [],
+                "quantity": 1,
+                "requires_shipping": true,
+                "sku": "346723476084",
+                "tax_lines": [],
+                "taxable": true,
+                "title": "Example T-Shirt",
+                "total_discount": "0.00",
+                "variant_id": 5161249027,
+                "variant_inventory_management": "shopify",
+                "variant_title": "Lithograph - Height: 9\" x Width: 12\"",
+                "vendor": "Acme"
+            }
+        ],
+        "order_id": 2017986627,
+        "receipt": {},
+        "service": "manual",
+        "status": "success",
+        "tracking_company": "USPS",
+        "tracking_number": "9405510200882805665013",
+        "tracking_numbers": [
+            "9405510200882805665013"
+        ],
+        "tracking_url": "https://tools.usps.com/go/TrackConfirmAction_input?qtc_tLabels1=9405510200882805665013",
+        "tracking_urls": [
+            "https://tools.usps.com/go/TrackConfirmAction_input?qtc_tLabels1=9405510200882805665013"
+        ],
+        "updated_at": "2015-11-20T17:39:18-05:00"
+    }
 }`
 )
