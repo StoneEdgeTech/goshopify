@@ -54,7 +54,7 @@ type Image struct {
 }
 
 func (s *Shopify) GetProduct(productId string, creds *Credentials, params url.Values) (*Product, error) {
-	uri, err := s.getUri(fmt.Sprintf(ProductEndpoint, productId), creds, params)
+	uri, err := s.GetUri(fmt.Sprintf(ProductEndpoint, productId), creds, params)
 	if err != nil {
 		return nil, err
 	}
@@ -69,7 +69,7 @@ func (s *Shopify) GetProduct(productId string, creds *Credentials, params url.Va
 }
 
 func (s *Shopify) GetProducts(creds *Credentials, params url.Values) ([]*Product, error) {
-	uri, err := s.getUri(ProductsEndpoint, creds, params)
+	uri, err := s.GetUri(ProductsEndpoint, creds, params)
 	if err != nil {
 		return nil, err
 	}
@@ -84,7 +84,7 @@ func (s *Shopify) GetProducts(creds *Credentials, params url.Values) ([]*Product
 }
 
 func (s *Shopify) GetProductsCount(creds *Credentials, params url.Values) (*ProductsCount, error) {
-	uri, err := s.getUri(ProductsCountEndpoint, creds, params)
+	uri, err := s.GetUri(ProductsCountEndpoint, creds, params)
 	if err != nil {
 		return nil, err
 	}

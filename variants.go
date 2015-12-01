@@ -63,7 +63,7 @@ func NewVariantUpdate(id, oldQty, newQty, adjustment int64) *VariantResponse {
 }
 
 func (s *Shopify) GetVariant(variantId string, creds *Credentials, params url.Values) (*Variant, error) {
-	uri, err := s.getUri(fmt.Sprintf(VariantEndpoint, variantId), creds, params)
+	uri, err := s.GetUri(fmt.Sprintf(VariantEndpoint, variantId), creds, params)
 	if err != nil {
 		return nil, err
 	}
@@ -89,7 +89,7 @@ func (s *Shopify) PutVariant(variantId string, payload interface{}, creds *Crede
 		return nil, err
 	}
 
-	uri, err := s.getUri(fmt.Sprintf(VariantEndpoint, variantId), creds, nil)
+	uri, err := s.GetUri(fmt.Sprintf(VariantEndpoint, variantId), creds, nil)
 	if err != nil {
 		return nil, err
 	}

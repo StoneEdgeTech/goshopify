@@ -44,7 +44,7 @@ type Receipt struct {
 }
 
 func (s *Shopify) GetTransactions(orderId string, creds *Credentials, params url.Values) ([]*Transaction, error) {
-	uri, err := s.getUri(fmt.Sprintf(TransactionsEndpoint, orderId), creds, params)
+	uri, err := s.GetUri(fmt.Sprintf(TransactionsEndpoint, orderId), creds, params)
 	if err != nil {
 		return nil, err
 	}

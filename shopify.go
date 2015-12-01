@@ -58,7 +58,7 @@ func New(baseUri string) *Shopify {
 	return &Shopify{baseUri}
 }
 
-func (s *Shopify) getUri(endpoint string, creds *Credentials, params url.Values) (*url.URL, error) {
+func (s *Shopify) GetUri(endpoint string, creds *Credentials, params url.Values) (*url.URL, error) {
 	baseUri := creds.SignBaseUri(s.baseUri)
 
 	uri, err := url.Parse(baseUri)

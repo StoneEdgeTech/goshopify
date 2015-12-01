@@ -50,7 +50,7 @@ func TestShopify(t *testing.T) {
 			s := &Shopify{u.String()}
 			c := &Credentials{cartId, "some-token"}
 
-			uri, err := s.getUri(ProductsEndpoint, c, nil)
+			uri, err := s.GetUri(ProductsEndpoint, c, nil)
 			Expect(err).NotTo(HaveOccurred())
 			Expect(uri.Host).To(Equal(fmt.Sprintf("%s.myshopify.com", cartId)))
 			Expect(uri.Path).To(Equal(ProductsEndpoint))
@@ -69,7 +69,7 @@ func TestShopify(t *testing.T) {
 			p := url.Values{}
 			p.Add(k, v)
 
-			uri, err := s.getUri(ProductsEndpoint, c, p)
+			uri, err := s.GetUri(ProductsEndpoint, c, p)
 			Expect(err).NotTo(HaveOccurred())
 			Expect(uri.Host).To(Equal(fmt.Sprintf("%s.myshopify.com", cartId)))
 			Expect(uri.Path).To(Equal(ProductsEndpoint))
@@ -85,7 +85,7 @@ func TestShopify(t *testing.T) {
 			s := &Shopify{u.String()}
 			c := &Credentials{cartId, "some-token"}
 
-			uri, err := s.getUri(fmt.Sprintf(ProductEndpoint, productId), c, nil)
+			uri, err := s.GetUri(fmt.Sprintf(ProductEndpoint, productId), c, nil)
 			Expect(err).NotTo(HaveOccurred())
 			Expect(uri.Host).To(Equal(fmt.Sprintf("%s.myshopify.com", cartId)))
 			Expect(uri.Path).To(Equal(fmt.Sprintf(ProductEndpoint, productId)))

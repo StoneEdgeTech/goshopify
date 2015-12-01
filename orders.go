@@ -179,7 +179,7 @@ type RefundLineItem struct {
 }
 
 func (s *Shopify) GetOrdersCount(creds *Credentials, params url.Values) (*OrdersCount, error) {
-	uri, err := s.getUri(OrdersCountEndpoint, creds, params)
+	uri, err := s.GetUri(OrdersCountEndpoint, creds, params)
 	if err != nil {
 		return nil, err
 	}
@@ -194,7 +194,7 @@ func (s *Shopify) GetOrdersCount(creds *Credentials, params url.Values) (*Orders
 }
 
 func (s *Shopify) GetOrders(creds *Credentials, params url.Values) ([]*Order, error) {
-	uri, err := s.getUri(OrdersEndpoint, creds, params)
+	uri, err := s.GetUri(OrdersEndpoint, creds, params)
 	if err != nil {
 		return nil, err
 	}
@@ -209,7 +209,7 @@ func (s *Shopify) GetOrders(creds *Credentials, params url.Values) ([]*Order, er
 }
 
 func (s *Shopify) GetOrder(orderId string, creds *Credentials, params url.Values) (*Order, error) {
-	uri, err := s.getUri(fmt.Sprintf(OrderEndpoint, orderId), creds, params)
+	uri, err := s.GetUri(fmt.Sprintf(OrderEndpoint, orderId), creds, params)
 	if err != nil {
 		return nil, err
 	}

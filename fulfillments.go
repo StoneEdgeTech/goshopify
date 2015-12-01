@@ -31,7 +31,7 @@ type Fulfillment struct {
 
 // call shopify to create fulfillment
 func (s *Shopify) CreateFulfillment(fulfillmentJson, orderId string, creds *Credentials, params url.Values) (*Fulfillment, error) {
-	uri, err := s.getUri(fmt.Sprintf(FulfillmentsEndpoint, orderId), creds, params)
+	uri, err := s.GetUri(fmt.Sprintf(FulfillmentsEndpoint, orderId), creds, params)
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +46,7 @@ func (s *Shopify) CreateFulfillment(fulfillmentJson, orderId string, creds *Cred
 
 // call shopify to ship fulfillment (mark as complete)
 func (s *Shopify) CompleteFulfillment(orderId, shipmentId string, creds *Credentials, params url.Values) (*Fulfillment, error) {
-	uri, err := s.getUri(fmt.Sprintf(FulfillmentCompleteEndpoint, orderId, shipmentId), creds, params)
+	uri, err := s.GetUri(fmt.Sprintf(FulfillmentCompleteEndpoint, orderId, shipmentId), creds, params)
 	if err != nil {
 		return nil, err
 	}
@@ -62,7 +62,7 @@ func (s *Shopify) CompleteFulfillment(orderId, shipmentId string, creds *Credent
 
 // get all the fulfillments for a specific order
 func (s *Shopify) GetFulfillments(orderId string, creds *Credentials, params url.Values) ([]*Fulfillment, error) {
-	uri, err := s.getUri(fmt.Sprintf(FulfillmentsEndpoint, orderId), creds, params)
+	uri, err := s.GetUri(fmt.Sprintf(FulfillmentsEndpoint, orderId), creds, params)
 	if err != nil {
 		return nil, err
 	}

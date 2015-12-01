@@ -36,7 +36,7 @@ type Customer struct {
 }
 
 func (s *Shopify) GetCustomers(creds *Credentials, params url.Values) ([]*Customer, error) {
-	uri, err := s.getUri(CustomersEndpoint, creds, params)
+	uri, err := s.GetUri(CustomersEndpoint, creds, params)
 	if err != nil {
 		return nil, err
 	}
@@ -51,7 +51,7 @@ func (s *Shopify) GetCustomers(creds *Credentials, params url.Values) ([]*Custom
 }
 
 func (s *Shopify) GetCustomersCount(creds *Credentials, params url.Values) (*CustomersCount, error) {
-	uri, err := s.getUri(CustomersCountEndpoint, creds, params)
+	uri, err := s.GetUri(CustomersCountEndpoint, creds, params)
 	if err != nil {
 		return nil, err
 	}
