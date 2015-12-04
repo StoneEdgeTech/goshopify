@@ -208,6 +208,38 @@ func (s *Shopify) GetOrders(creds *Credentials, params url.Values) ([]*Order, er
 	return ordersResponse.Orders, nil
 }
 
+func (s *Shopify) GetOrdersSinceId(creds *Credentials, sinceId string, params url.Values) ([]*Order, error) {
+	if params == nil {
+		params = url.Values{}
+	}
+	params.Add("since_id", sinceId)
+	return s.GetOrders(creds, params)
+}
+
+func (s *Shopify) GetOrdersSinceOrderNumber(creds *Credentials, sinceNum string, params url.Values) ([]*Order, error) {
+	sinceId, err := s.FindOrderIdFromOrderNumber(creds, sinceNum)
+	if err != nil {
+		return nil, err
+	}
+	return s.GetOrdersSinceId(creds, sinceId, params)
+}
+
+func (s *Shopify) FindOrderIdFromOrderNumber(creds *Credentials, orderNum string) (string, error) {
+	params := url.Values{}
+	params.Add("name", orderNum)
+	params.Add("fields", "id,order_number")
+	uri, err := s.getUri("/admin/orders.json", creds, params)
+	var ordersResponse *OrdersResponse
+	err = s.DoRequest("GET", uri, creds, nil, &ordersResponse)
+	if err != nil {
+		return "", fmt.Errorf("Request to Shopify Orders failed: %s", err.Error())
+	}
+	if ordersResponse == nil || ordersResponse.Orders == nil || len(ordersResponse.Orders) != 1 {
+		return "", fmt.Errorf("invalid response from shopify when resolving orders")
+	}
+	return fmt.Sprintf("%v", ordersResponse.Orders[0].Id), nil
+}
+
 func (s *Shopify) GetOrder(orderId string, creds *Credentials, params url.Values) (*Order, error) {
 	uri, err := s.getUri(fmt.Sprintf(OrderEndpoint, orderId), creds, params)
 	if err != nil {
