@@ -9,7 +9,7 @@
 		},
 		{
 			"ImportPath": "github.com/gomicro/bogus",
-			"Rev": "ef613e2d4953d75275abb5553129e15eae8fe580"
+			"Rev": "ce4be10a2041aee088c20e5b3dc7f71271b517f3"
 		},
 		{
 			"ImportPath": "github.com/onsi/gomega",

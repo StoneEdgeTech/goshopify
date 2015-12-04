@@ -2,7 +2,10 @@ package goshopify
 
 import (
 	"fmt"
+	"io/ioutil"
 	"net/http"
+	"net/http/httptest"
+	"net/url"
 	"testing"
 
 	. "github.com/franela/goblin"
@@ -26,6 +29,74 @@ func TestShopifyOrders(t *testing.T) {
 			mockShopify.Close()
 		})
 
+		g.Describe("Get Since", func() {
+			g.It("should resolve an order ID given an order number", func() {
+				mockShopify.SetPayload([]byte(`{"orders":[{"id":1860562629,"order_number":39852}]}`))
+				mockShopify.SetStatus(http.StatusOK)
+				host, port := mockShopify.HostPort()
+				s := &Shopify{fmt.Sprintf("http://%s:%s", host, port)}
+				c := &Credentials{"some-cart-id", "oauthom"}
+				orderId, err := s.FindOrderIdFromOrderNumber(c, "39852")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(orderId).To(Equal("1860562629"))
+			})
+			g.It("should download only orders since a given order id", func() {
+				mockShopify.SetPayload([]byte(SampleLiveOrdersJson))
+				mockShopify.SetStatus(http.StatusOK)
+				host, port := mockShopify.HostPort()
+				s := &Shopify{fmt.Sprintf("http://%s:%s", host, port)}
+				c := &Credentials{"some-cart-id", "oauthom"}
+
+				orders, err := s.GetOrdersSinceId(c, "1212953282", nil)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(orders).NotTo(BeNil())
+				Expect(orders).To(HaveLen(6))
+
+				Expect(mockShopify.HitRecords()).To(HaveLen(1))
+				hit := mockShopify.HitRecords()[0]
+				Expect(hit.Path).To(Equal("/admin/orders.json"))
+				Expect(hit.Query).To(HaveLen(1))
+				Expect(hit.Query["since_id"][0]).To(Equal("1212953282"))
+			})
+			g.It("should download only orders since a given order number", func() {
+				type HitRecord struct {
+					Verb  string
+					Path  string
+					Query url.Values
+					Body  []byte
+				}
+				var hitRecords []HitRecord
+				mock := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+					bodyBytes, _ := ioutil.ReadAll(r.Body)
+					r.Body.Close()
+					hitRecords = append(hitRecords, HitRecord{r.Method, r.URL.Path, r.URL.Query(), bodyBytes})
+					if _, ok := r.URL.Query()["fields"]; ok {
+						w.Write([]byte(`{"orders":[{"id":1860562629,"order_number":39852}]}`))
+						return
+					}
+					w.Write([]byte(SampleLiveOrdersJson))
+				}))
+				s := &Shopify{mock.URL}
+				c := &Credentials{"some-cart-id", "oauthom"}
+				orders, err := s.GetOrdersSinceOrderNumber(c, "39852", nil)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(orders).NotTo(BeNil())
+				Expect(orders).To(HaveLen(6))
+				Expect(hitRecords).To(HaveLen(2))
+
+				orderNumResolutionHit := hitRecords[0]
+				Expect(orderNumResolutionHit.Query).To(HaveLen(2))
+				Expect(orderNumResolutionHit.Query["fields"]).To(HaveLen(1))
+				Expect(orderNumResolutionHit.Query["fields"][0]).To(Equal("id,order_number"))
+				Expect(orderNumResolutionHit.Query["name"]).To(HaveLen(1))
+				Expect(orderNumResolutionHit.Query["name"][0]).To(Equal("39852"))
+
+				ordersHit := hitRecords[1]
+				Expect(ordersHit.Query).To(HaveLen(1))
+				Expect(ordersHit.Query["since_id"]).To(HaveLen(1))
+				Expect(ordersHit.Query["since_id"][0]).To(Equal("1860562629"))
+			})
+		})
 		g.Describe("Get All", func() {
 			g.It("should download a list of orders", func() {
 				mockShopify.SetPayload([]byte(SampleOrdersJson))
