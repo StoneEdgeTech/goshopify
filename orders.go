@@ -228,7 +228,7 @@ func (s *Shopify) FindOrderIdFromOrderNumber(creds *Credentials, orderNum string
 	params := url.Values{}
 	params.Add("name", orderNum)
 	params.Add("fields", "id,order_number")
-	uri, err := s.getUri("/admin/orders.json", creds, params)
+	uri, err := s.getUri(OrdersEndpoint, creds, params)
 	var ordersResponse *OrdersResponse
 	err = s.DoRequest("GET", uri, creds, nil, &ordersResponse)
 	if err != nil {
