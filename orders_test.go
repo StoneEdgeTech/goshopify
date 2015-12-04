@@ -40,6 +40,15 @@ func TestShopifyOrders(t *testing.T) {
 				Expect(err).NotTo(HaveOccurred())
 				Expect(orderId).To(Equal("1860562629"))
 			})
+			g.It("should error if unable to resolve an order number to an order id", func() {
+				mockShopify.SetPayload([]byte(`{"orders":[]}`))
+				mockShopify.SetStatus(http.StatusOK)
+				host, port := mockShopify.HostPort()
+				s := &Shopify{fmt.Sprintf("http://%s:%s", host, port)}
+				c := &Credentials{"some-cart-id", "oauthom"}
+				_, err := s.FindOrderIdFromOrderNumber(c, "39852")
+				Expect(err).To(HaveOccurred())
+			})
 			g.It("should download only orders since a given order id", func() {
 				mockShopify.SetPayload([]byte(SampleLiveOrdersJson))
 				mockShopify.SetStatus(http.StatusOK)
