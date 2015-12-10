@@ -107,23 +107,6 @@ func TestShopify(t *testing.T) {
 			Expect(err).To(HaveOccurred())
 		})
 
-		g.It("should return an error if it cannot read a sleep time", func() {
-			mockShopify.SetPayload([]byte(""))
-			mockShopify.SetStatus(429)
-			host, port := mockShopify.HostPort()
-			u, _ := url.Parse(fmt.Sprintf("http://%s:%s", host, port))
-
-			s := &Shopify{u.String()}
-			c := &Credentials{"some-cart-id", "some-token"}
-
-			type TestJson struct {
-			}
-			var r TestJson
-			err := s.DoRequest("GET", u, c, nil, &r)
-
-			Expect(err).To(HaveOccurred())
-		})
-
 		g.It("should return an error if bodybytes is 0 length", func() {
 			mockShopify.SetPayload([]byte(""))
 			mockShopify.SetStatus(http.StatusBadRequest)
