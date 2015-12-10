@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"math"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -105,10 +106,16 @@ func (s *Shopify) DoRequest(verb string, uri *url.URL, creds *Credentials, paylo
 		if resp.StatusCode == 429 {
 
 			// read X-Retry-After header for sleep interval
-			sleepInterval, err := strconv.Atoi(resp.Header.Get("X-Retry-After"))
-			if err != nil {
-				return fmt.Errorf("GetResponse cannot read sleep interval: (%d) %s", resp.StatusCode, err.Error())
+			retryAfter := resp.Header.Get("Retry-After")
+			if retryAfter == "" {
+				retryAfter = "2.0" // default to 2 seconds
 			}
+			sleepIntervalFloat, err := strconv.ParseFloat(retryAfter, 32)
+			if err != nil {
+				sleepIntervalFloat = 2.0 // default to 2 seconds
+			}
+			sleepInterval := int(math.Ceil(sleepIntervalFloat))
+			fmt.Printf("sleeping for %v seconds\n", sleepInterval)
 
 			// sleep
 			time.Sleep(time.Duration(sleepInterval) * time.Second)
