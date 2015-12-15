@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/http/httptest"
 	"testing"
 
 	. "github.com/franela/goblin"
@@ -39,13 +40,14 @@ func TestShopifyFullfillments(t *testing.T) {
 
 		g.Describe("CreateFulfillment", func() {
 			g.It("should send back a single fulfillment after creating a fulfillment", func() {
+				mock := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+					w.Write([]byte(SingleFulfillmentsJson))
+				}))
+				s := &Shopify{mock.URL}
+				c := &Credentials{"some-cart-id", "oauthom"}
+
 				fulfillmentJson := `{"fulfillment": {"tracking_number": "9405510200882805665013" }}`
 				orderId := `2017986627`
-				c := &Credentials{"some-cart-id", "oauthom"}
-				mockShopify.SetPayload([]byte(SingleFulfillmentsJson))
-				mockShopify.SetStatus(http.StatusCreated)
-				host, port := mockShopify.HostPort()
-				s := &Shopify{fmt.Sprintf("http://%s:%s", host, port)}
 				fulfillment, err := s.CreateFulfillment(fulfillmentJson, orderId, c, nil)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(fulfillment.Id).To(Equal(int64(1533523203)))
