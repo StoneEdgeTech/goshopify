@@ -30,6 +30,16 @@ func TestShopifyOrders(t *testing.T) {
 		})
 
 		g.Describe("Get Since", func() {
+			g.It("should resolve an order Number given an order Id", func() {
+				mockShopify.SetPayload([]byte(`{"orders":[{"order_number":39852}]}`))
+				mockShopify.SetStatus(http.StatusOK)
+				host, port := mockShopify.HostPort()
+				s := &Shopify{fmt.Sprintf("http://%s:%s", host, port)}
+				c := &Credentials{"some-cart-id", "oauthom"}
+				orderId, err := s.FindOrderNumberFromOrderId(c, "1860562629")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(orderId).To(Equal("39852"))
+			})
 			g.It("should resolve an order ID given an order number", func() {
 				mockShopify.SetPayload([]byte(`{"orders":[{"id":1860562629,"order_number":39852}]}`))
 				mockShopify.SetStatus(http.StatusOK)
