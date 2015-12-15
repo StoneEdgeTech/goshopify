@@ -3,6 +3,7 @@ package goshopify
 import (
 	"fmt"
 	"net/http"
+	"net/http/httptest"
 	"strconv"
 	"testing"
 
@@ -69,8 +70,10 @@ func TestShopifyVariants(t *testing.T) {
 
 		g.Describe("Updating", func() {
 			g.It("should set variant quantity", func() {
-				mockShopify.SetPayload([]byte(SampleVariantJsonQuantity(5)))
-				mockShopify.SetStatus(http.StatusOK)
+				mockShopify.AddPath("/").
+					SetPayload([]byte(SampleVariantJsonQuantity(5))).
+					SetStatus(http.StatusOK).
+					SetMethods("PUT")
 				host, port := mockShopify.HostPort()
 				id := int64(1)
 				oldAmount := int64(1)
@@ -86,23 +89,18 @@ func TestShopifyVariants(t *testing.T) {
 				Expect(err).NotTo(HaveOccurred())
 				Expect(v).NotTo(BeNil())
 				Expect(v.Id).To(Equal(int64(1)))
-				Expect(v.Sku).To(Equal("Sku1"))
 				Expect(v.InventoryQuantity).To(Equal(int64(5)))
 			})
 
 			g.It("should decrement variant quantity", func() {
-				mockShopify.SetPayload([]byte(SampleVariantJsonQuantity(5)))
-				mockShopify.SetStatus(http.StatusOK)
-				host, port := mockShopify.HostPort()
+				mock := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+					w.Write([]byte(SampleVariantJsonQuantity(5)))
+				}))
+				s := &Shopify{mock.URL}
+				c := &Credentials{"some-cart-id", "oauthom"}
 				id := int64(1)
 				adjustAmount := int64(-5)
-				storeIdentifier := "some-cart-hash"
-				oauthToken := "oauthom"
 				update := NewVariantUpdate(id, 0, 0, adjustAmount)
-
-				s := &Shopify{fmt.Sprintf("http://%s:%s", host, port)}
-				c := &Credentials{storeIdentifier, oauthToken}
-
 				v, err := s.PutVariant(strconv.Itoa(int(id)), update, c)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(v).NotTo(BeNil())
@@ -112,18 +110,14 @@ func TestShopifyVariants(t *testing.T) {
 			})
 
 			g.It("should increment variant quantity", func() {
-				mockShopify.SetPayload([]byte(SampleVariantJsonQuantity(15)))
-				mockShopify.SetStatus(http.StatusOK)
-				host, port := mockShopify.HostPort()
+				mock := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+					w.Write([]byte(SampleVariantJsonQuantity(15)))
+				}))
+				s := &Shopify{mock.URL}
+				c := &Credentials{"some-cart-id", "oauthom"}
 				id := int64(1)
 				adjustAmount := int64(5)
-				storeIdentifier := "some-cart-hash"
-				oauthToken := "oauthom"
 				update := NewVariantUpdate(id, 0, 0, adjustAmount)
-
-				s := &Shopify{fmt.Sprintf("http://%s:%s", host, port)}
-				c := &Credentials{storeIdentifier, oauthToken}
-
 				v, err := s.PutVariant(strconv.Itoa(int(id)), update, c)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(v).NotTo(BeNil())
@@ -133,18 +127,14 @@ func TestShopifyVariants(t *testing.T) {
 			})
 
 			g.It("should not change variant quantity", func() {
-				mockShopify.SetPayload([]byte(SampleVariantJsonQuantity(10)))
-				mockShopify.SetStatus(http.StatusOK)
-				host, port := mockShopify.HostPort()
+				mock := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+					w.Write([]byte(SampleVariantJsonQuantity(10)))
+				}))
+				s := &Shopify{mock.URL}
+				c := &Credentials{"some-cart-id", "oauthom"}
 				id := int64(1)
 				adjustAmount := int64(0)
-				storeIdentifier := "some-cart-hash"
-				oauthToken := "oauthom"
 				update := NewVariantUpdate(id, 0, 0, adjustAmount)
-
-				s := &Shopify{fmt.Sprintf("http://%s:%s", host, port)}
-				c := &Credentials{storeIdentifier, oauthToken}
-
 				v, err := s.PutVariant(strconv.Itoa(int(id)), update, c)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(v).NotTo(BeNil())

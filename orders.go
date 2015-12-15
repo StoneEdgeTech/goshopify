@@ -240,6 +240,19 @@ func (s *Shopify) FindOrderIdFromOrderNumber(creds *Credentials, orderNum string
 	return fmt.Sprintf("%v", ordersResponse.Orders[0].Id), nil
 }
 
+func (s *Shopify) FindOrderNumberFromOrderId(creds *Credentials, orderId string) (int64, error) {
+	params := url.Values{}
+	params.Add("fields", "order_number")
+	order, err := s.GetOrder(orderId, creds, params)
+	if err != nil {
+		return 0, err
+	}
+	if order == nil {
+		return 0, nil
+	}
+	return order.OrderNumber, nil
+}
+
 func (s *Shopify) GetOrder(orderId string, creds *Credentials, params url.Values) (*Order, error) {
 	uri, err := s.getUri(fmt.Sprintf(OrderEndpoint, orderId), creds, params)
 	if err != nil {
