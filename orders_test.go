@@ -104,7 +104,7 @@ func TestShopifyOrders(t *testing.T) {
 				Expect(hitRecords).To(HaveLen(2))
 
 				orderNumResolutionHit := hitRecords[0]
-				Expect(orderNumResolutionHit.Query).To(HaveLen(2))
+				Expect(orderNumResolutionHit.Query).To(HaveLen(3))
 				Expect(orderNumResolutionHit.Query["fields"]).To(HaveLen(1))
 				Expect(orderNumResolutionHit.Query["fields"][0]).To(Equal("id,order_number"))
 				Expect(orderNumResolutionHit.Query["name"]).To(HaveLen(1))
