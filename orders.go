@@ -227,6 +227,7 @@ func (s *Shopify) GetOrdersSinceOrderNumber(creds *Credentials, sinceNum string,
 func (s *Shopify) FindOrderIdFromOrderNumber(creds *Credentials, orderNum string) (string, error) {
 	params := url.Values{}
 	params.Add("name", orderNum)
+	params.Add("status", "any")
 	params.Add("fields", "id,order_number")
 	uri, err := s.getUri(OrdersEndpoint, creds, params)
 	var ordersResponse *OrdersResponse
