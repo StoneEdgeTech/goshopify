@@ -44,8 +44,8 @@ type Variant struct {
 type VariantUpdate struct {
 	Id                 int64 `json:"id"`
 	QuantityAdjustment int64 `json:"inventory_quantity_adjustment,omitempty"`
-	Quantity           int64 `json:"inventory_quantity,omitempty"`
-	OriginalQuantity   int64 `json:"old_inventory_quantity,omitempty"`
+	Quantity           int64 `json:"inventory_quantity"`
+	OriginalQuantity   int64 `json:"old_inventory_quantity"`
 }
 
 func NewVariantUpdate(id, oldQty, newQty, adjustment int64) *VariantResponse {
