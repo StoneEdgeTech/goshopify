@@ -65,6 +65,11 @@ func (s *Shopify) GetProduct(productId string, creds *Credentials, params url.Va
 		return nil, fmt.Errorf("Product: %s", err.Error())
 	}
 
+	// if no product returned, then just return nil. Do not error out.
+	if productResponse == nil {
+		return nil, nil
+	}
+
 	return productResponse.Product, nil
 }
 
