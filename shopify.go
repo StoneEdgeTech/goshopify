@@ -123,6 +123,8 @@ func (s *Shopify) DoRequest(verb string, uri *url.URL, creds *Credentials, paylo
 			// retry
 			return s.DoRequest(verb, uri, creds, payload, jsonStruct)
 		}
+		bodyBytes, _ := ioutil.ReadAll(resp.Body)
+		fmt.Printf("bad response code, body:\n%v\n", string(bodyBytes))
 
 		// return the error
 		return fmt.Errorf("Bad response code : (%d) %s", resp.StatusCode, uri)

@@ -41,20 +41,40 @@ type Variant struct {
 	WeightUnit           string  `json:"weight_unit"`
 }
 
-type VariantUpdate struct {
+type ZeroVariantUpdate struct {
 	Id                 int64 `json:"id"`
 	QuantityAdjustment int64 `json:"inventory_quantity_adjustment,omitempty"`
 	Quantity           int64 `json:"inventory_quantity"`
 	OriginalQuantity   int64 `json:"old_inventory_quantity"`
 }
 
+type VariantUpdate struct {
+	Id                 int64 `json:"id"`
+	QuantityAdjustment int64 `json:"inventory_quantity_adjustment,omitempty"`
+	Quantity           int64 `json:"inventory_quantity,omitempty"`
+	OriginalQuantity   int64 `json:"old_inventory_quantity,omitempty"`
+}
+
 func NewVariantUpdate(id, oldQty, newQty, adjustment int64) *VariantResponse {
-	j, err := json.Marshal(&VariantUpdate{
-		Id:                 id,
-		Quantity:           newQty,
-		OriginalQuantity:   oldQty,
-		QuantityAdjustment: adjustment,
-	})
+	var j []byte
+	var err error
+	if adjustment == 0 { // we are setting an arbitrary quantity
+		j, err = json.Marshal(&ZeroVariantUpdate{
+			Id:                 id,
+			Quantity:           newQty,
+			OriginalQuantity:   oldQty,
+			QuantityAdjustment: adjustment,
+		})
+
+	} else { // we are adjusting a quantity
+		j, err = json.Marshal(&VariantUpdate{
+			Id:                 id,
+			Quantity:           newQty,
+			OriginalQuantity:   oldQty,
+			QuantityAdjustment: adjustment,
+		})
+	}
+	fmt.Printf("new variant:\n%+v\n", string(j))
 	if err != nil {
 		return nil
 	}
