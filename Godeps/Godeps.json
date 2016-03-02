@@ -1,6 +1,9 @@
 {
 	"ImportPath": "github.com/stoneedgetech/goshopify",
 	"GoVersion": "go1.5",
+	"Packages": [
+		"./..."
+	],
 	"Deps": [
 		{
 			"ImportPath": "github.com/franela/goblin",
