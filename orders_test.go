@@ -104,11 +104,13 @@ func TestShopifyOrders(t *testing.T) {
 				Expect(hitRecords).To(HaveLen(2))
 
 				orderNumResolutionHit := hitRecords[0]
-				Expect(orderNumResolutionHit.Query).To(HaveLen(3))
+				Expect(orderNumResolutionHit.Query).To(HaveLen(4))
 				Expect(orderNumResolutionHit.Query["fields"]).To(HaveLen(1))
 				Expect(orderNumResolutionHit.Query["fields"][0]).To(Equal("id,order_number"))
 				Expect(orderNumResolutionHit.Query["name"]).To(HaveLen(1))
 				Expect(orderNumResolutionHit.Query["name"][0]).To(Equal("39852"))
+				Expect(orderNumResolutionHit.Query["limit"]).To(HaveLen(1))
+				Expect(orderNumResolutionHit.Query["limit"][0]).To(Equal(fmt.Sprintf("%v", MaxLimit)))
 
 				ordersHit := hitRecords[1]
 				Expect(ordersHit.Query).To(HaveLen(1))
