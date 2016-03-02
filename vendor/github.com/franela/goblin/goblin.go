@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"regexp"
 	"runtime"
+	"sync"
 	"testing"
 	"time"
 )
@@ -71,31 +72,28 @@ func (d *Describe) runAfterEach() {
 }
 
 func (d *Describe) run(g *G) bool {
-	g.reporter.beginDescribe(d.name)
-
-	failed := ""
-
+	failed := false
 	if d.hasTests {
+		g.reporter.beginDescribe(d.name)
+
 		for _, b := range d.befores {
 			b()
 		}
-	}
 
-	for _, r := range d.children {
-		if r.run(g) {
-			failed = "true"
+		for _, r := range d.children {
+			if r.run(g) {
+				failed = true
+			}
 		}
-	}
 
-	if d.hasTests {
 		for _, a := range d.afters {
 			a()
 		}
+
+		g.reporter.endDescribe()
 	}
 
-	g.reporter.endDescribe()
-
-	return failed != ""
+	return failed
 }
 
 type Failure struct {
@@ -179,14 +177,16 @@ func Goblin(t *testing.T, arguments ...string) *G {
 
 func runIt(g *G, h interface{}) {
 	defer timeTrack(time.Now(), g)
+	g.mutex.Lock()
 	g.timedOut = false
+	g.mutex.Unlock()
 	g.shouldContinue = make(chan bool)
 	if call, ok := h.(func()); ok {
 		// the test is synchronous
-		go func() { call(); g.shouldContinue <- true }()
+		go func(c chan bool) { call(); c <- true }(g.shouldContinue)
 	} else if call, ok := h.(func(Done)); ok {
 		doneCalled := 0
-		go func() {
+		go func(c chan bool) {
 			call(func(msg ...interface{}) {
 				if len(msg) > 0 {
 					g.Fail(msg)
@@ -195,10 +195,10 @@ func runIt(g *G, h interface{}) {
 					if doneCalled > 1 {
 						g.Fail("Done called multiple times")
 					}
-					g.shouldContinue <- true
+					c <- true
 				}
 			})
-		}()
+		}(g.shouldContinue)
 	} else {
 		panic("Not implemented.")
 	}
@@ -220,6 +220,7 @@ type G struct {
 	reporter       Reporter
 	timedOut       bool
 	shouldContinue chan bool
+	mutex          sync.Mutex
 }
 
 func (g *G) SetReporter(r Reporter) {
@@ -283,9 +284,11 @@ func (g *G) Fail(error interface{}) {
 	if g.shouldContinue != nil {
 		g.shouldContinue <- true
 	}
-
+	g.mutex.Lock()
+	defer g.mutex.Unlock()
 	if !g.timedOut {
 		//Stop test function execution
 		runtime.Goexit()
 	}
+
 }
