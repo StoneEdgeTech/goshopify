@@ -229,6 +229,7 @@ func (s *Shopify) FindOrderIdFromOrderNumber(creds *Credentials, orderNum string
 	params.Add("name", orderNum)
 	params.Add("status", "any")
 	params.Add("fields", "id,order_number")
+	params.Add("limit", goshopify.MaxLimit)
 	uri, err := s.getUri(OrdersEndpoint, creds, params)
 	var ordersResponse *OrdersResponse
 	err = s.DoRequest("GET", uri, creds, nil, &ordersResponse)
